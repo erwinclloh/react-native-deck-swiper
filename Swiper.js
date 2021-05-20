@@ -50,7 +50,8 @@ class Swiper extends Component {
       slideGesture: false,
       swipeBackXYPositions: [],
       isSwipingBack: false,
-      ...rebuildStackAnimatedValues(props)
+      ...rebuildStackAnimatedValues(props),
+      overlayTypeOnSwipeCard: null,
     }
 
     this._mounted = true
@@ -368,6 +369,7 @@ class Swiper extends Component {
   }
 
   swipeLeft = (mustDecrementCardIndex = false) => {
+    this.setState({ labelType: LABEL_TYPES.LEFT, isCallingSwipeEvent: true })
     this.swipeCard(
       this.props.onSwipedLeft,
       -this.props.horizontalThreshold,
@@ -377,6 +379,7 @@ class Swiper extends Component {
   }
 
   swipeRight = (mustDecrementCardIndex = false) => {
+    this.setState({ labelType: LABEL_TYPES.RIGHT, isCallingSwipeEvent: true })
     this.swipeCard(
       this.props.onSwipedRight,
       this.props.horizontalThreshold,
@@ -409,7 +412,7 @@ class Swiper extends Component {
     y = this._animatedValueY,
     mustDecrementCardIndex = false
   ) => {
-    this.setState({ panResponderLocked: true })
+    this.setState({ panResponderLocked: true, isCallingSwipeEvent: false})
     this.animateStack()
     Animated.timing(this.state.pan, {
       toValue: {
@@ -594,8 +597,9 @@ class Swiper extends Component {
   calculateOverlayLabelWrapperStyle = () => {
     const dynamicStyle = this.props.overlayLabels[this.state.labelType].style
     const dynamicWrapperStyle = dynamicStyle ? dynamicStyle.wrapper : {}
+    const { isCallingSwipeEvent } = this.state
 
-    const opacity = this.props.animateOverlayLabelsOpacity
+    const opacity = this.props.animateOverlayLabelsOpacity && !isCallingSwipeEvent
       ? this.interpolateOverlayLabelsOpacity()
       : 1
     return [this.props.overlayLabelWrapperStyle, dynamicWrapperStyle, { opacity }]
