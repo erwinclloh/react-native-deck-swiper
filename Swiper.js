@@ -277,10 +277,12 @@ class Swiper extends Component {
       this.props.onTapCard(this.state.firstCardIndex)
     }
 
-    this.setState({
-      labelType: LABEL_TYPES.NONE,
-      slideGesture: false
-    })
+    if (!this.props.overlayOnRelease){
+      this.setState({
+        labelType: LABEL_TYPES.NONE,
+        slideGesture: false
+      })
+    }
   }
 
   getOnSwipeDirectionCallback = (animatedValueX, animatedValueY) => {
@@ -896,6 +898,7 @@ Swiper.propTypes = {
   outputOverlayLabelsOpacityRangeY: PropTypes.array,
   outputRotationRange: PropTypes.array,
   outputCardOpacityRange: PropTypes.array,
+  overlayOnRelease: PropTypes.bool,
   overlayLabels: PropTypes.object,
   overlayLabelStyle: PropTypes.object,
   overlayLabelWrapperStyle: PropTypes.object,
@@ -978,6 +981,7 @@ Swiper.defaultProps = {
   outputOverlayLabelsOpacityRangeX: [1, 0, 0, 0, 1],
   outputOverlayLabelsOpacityRangeY: [1, 0, 0, 0, 1],
   outputRotationRange: ['-10deg', '0deg', '10deg'],
+  overlayOnRelease: false,
   overlayLabels: null,
   overlayLabelStyle: {
     fontSize: 45,
